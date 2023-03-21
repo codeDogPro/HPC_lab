@@ -39,17 +39,41 @@ operator+(std::variant<T1, T2> const &a, std::variant<T1, T2> const &b)
 {
   // 请实现自动匹配容器中具体类型的加法！10 分
   using T = decltype(T1{} + T2{});
-  if(std::is_same_v<T, T2>){
-//  开摆了，真不懂这个怎么精确获取类型了
+  if(std::holds_alternative<T1>(a)){
+    auto real_a = std::get<T1>(a);
+    if(std::holds_alternative<T1>(b)){
+      auto real_b = std::get<T1>(b);
+      T res;
+      size_t size = std::min(real_a.size(), real_b.size());
+      for(size_t i = 0; i < size; i++)
+        res.push_back(real_a[i] + real_b[i]);
+      return res;
+    } else{
+      auto real_b = std::get<T2>(b);
+      T res;
+      size_t size = std::min(real_a.size(), real_b.size());
+      for(size_t i = 0; i < size; i++)
+        res.push_back(real_a[i] + real_b[i]);
+      return res;
+    }
+  } else{
+    auto real_a = std::get<T2>(a);
+    if(std::holds_alternative<T1>(b)){
+      auto real_b = std::get<T1>(b);
+      T res;
+      size_t size = std::min(real_a.size(), real_b.size());
+      for(size_t i = 0; i < size; i++)
+        res.push_back(real_a[i] + real_b[i]);
+      return res;
+    } else{
+      auto real_b = std::get<T2>(b);
+      T res;
+      size_t size = std::min(real_a.size(), real_b.size());
+      for(size_t i = 0; i < size; i++)
+        res.push_back(real_a[i] + real_b[i]);
+      return res;
+    }
   }
-  std::cout << cpp_type_name<T>() << std::endl;
-  auto real_a = std::get<T>(a);
-  auto real_b = std::get<T>(b);
-  size_t size = std::min(real_a.size(), real_b.size());
-  T res;
-  for(size_t i = 0; i < size; i++)
-    res.push_back(real_a[i] + real_b[i]);
-  return res;
 }
 
 template <class T1, class T2>
@@ -79,8 +103,8 @@ int main()
 
   std::variant<std::vector<int>, std::vector<double>> d = c;
   std::variant<std::vector<int>, std::vector<double>> e = a;
-  d = d + e;
-  // d = d + c + e;
+  // d = d + e;
+  d = d + std::variant<std::vector<int>, std::vector<double>>(c) + e;
 
   // 应该输出 {9.28, 17.436, 7.236}
   std::cout << d << std::endl;
