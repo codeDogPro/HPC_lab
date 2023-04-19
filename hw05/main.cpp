@@ -62,6 +62,7 @@ do_login(std::string const &username, std::string const &password) {
   return "登录成功";
 }
 
+#include <cmath>
 std::string const
 do_queryuser(std::string const &username) {
   /*
@@ -69,10 +70,16 @@ do_queryuser(std::string const &username) {
   */
   puts("In query");
   std::cout << username << std::endl;
+  float res = 0;
+  // use to delay
+  for(int i = 0; i < 1000; i++){
+    res += std::sin(i);
+  }
   // auto &user = users.at(username);
   // puts("Got the user");
   std::stringstream ss;
   ss << "用户名: " << username << std::endl;
+  ss << "电话: " << std::to_string(res) << std::endl;
   // ss << "学校:" << user.school << std::endl;
   // ss << "电话: " << user.phone << std::endl;
   return ss.str();
